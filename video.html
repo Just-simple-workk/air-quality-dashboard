@@ -3,157 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube-like Live Streaming Player</title>
-    
-    <!-- Video.js CSS -->
-    <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
-    
+    <title>Live Streaming Page</title>
+
+    <!-- Custom CSS for responsiveness and styling -->
     <style>
-        /* Body and General Page Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #000;
             color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         header {
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.8);
             padding: 20px;
             text-align: center;
             color: white;
-            width: 100%;
         }
 
         header h1 {
             font-size: 36px;
         }
 
-        /* Video Container Styling */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         .video-container {
             position: relative;
-            max-width: 100%;
-            width: 80%;
-            background-color: #000;
+            overflow: hidden;
+            background: #000;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
         }
 
-        /* Styling Controls and Play Button */
-        .vjs-play-control,
-        .vjs-volume-control,
-        .vjs-fullscreen-control,
-        .vjs-quality-control {
-            transition: all 0.3s ease;
+        /* Make the video responsive */
+        video {
+            width: 100%;
+            height: auto;
         }
 
-        /* Fullscreen and Quality Controls */
-        .vjs-fullscreen-control,
-        .vjs-quality-control {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-            z-index: 999;
-        }
-
-        .vjs-fullscreen-control:hover,
-        .vjs-quality-control:hover {
-            transform: scale(1.1);
-        }
-
-        /* Video Control Buttons for Play and Pause */
-        .vjs-play-control {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            margin: 5px;
-            cursor: pointer;
-        }
-
-        /* Quality Dropdown Styling */
-        .vjs-quality-menu {
-            position: absolute;
-            top: 40px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            list-style: none;
-            border-radius: 5px;
-            display: none;
-        }
-
-        .vjs-quality-menu li {
-            color: #fff;
-            padding: 8px;
-            cursor: pointer;
-        }
-
-        .vjs-quality-menu li:hover {
-            background-color: #444;
-        }
-
-        /* Footer Styling */
+        /* Footer */
         footer {
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.8);
             padding: 20px;
             text-align: center;
             color: white;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-        }
-
-        /* Responsive Styling */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 28px;
-            }
-
-            .video-container {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header with title -->
     <header>
-        <h1>👑 KING 👑 - Live Stream</h1>
+        <h1>👑 KING 👑</h1>
     </header>
 
-    <!-- Video Player Container -->
-    <div class="video-container">
-        <video
-            id="my-video"
-            class="video-js vjs-default-skin vjs-big-play-centered"
-            controls autoplay preload="auto" data-setup='{"techOrder": ["html5"]}'>
-            <source src="https://f736fce18ecea072ade164c6fbfebc0a.angelthump.com/hls/MjAyNC0xMS0yNFQwNjoyNDoxOC45NThaYXJjaGllc2hvdHM=_archieshots/index.m3u8" type="application/x-mpegURL">
-        </video>
-
-        <!-- Fullscreen Toggle Button -->
-        <button class="vjs-fullscreen-control">⛶</button>
-
-        <!-- Quality Selector Button -->
-        <button class="vjs-quality-control" id="quality-selector">⚙️</button>
-
-        <!-- Quality Dropdown Menu -->
-        <ul class="vjs-quality-menu" id="quality-menu">
-            <li data-quality="240p">240p</li>
-            <li data-quality="480p">480p</li>
-            <li data-quality="720p">720p</li>
-            <li data-quality="1080p">1080p</li>
-        </ul>
+    <div class="container">
+        <!-- Video Player Container -->
+        <div class="video-container">
+            <video id="live-video" controls autoplay preload="auto">
+                <!-- Fallback content for unsupported browsers -->
+                <p>Your browser does not support HTML5 video.</p>
+            </video>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -161,49 +77,38 @@
         <p>&copy; ALL RIGHTS RESERVED <mark> KING </mark></p>
     </footer>
 
-    <!-- Include Video.js JS -->
-    <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
+    <!-- Include HLS.js (for browsers that don't support HLS natively) -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
     <script>
-        var player = videojs('my-video', {
-            techOrder: ['html5'],
-            autoplay: true,
-            preload: 'auto',
-        });
-
-        // Quality menu toggle functionality
-        var qualitySelector = document.getElementById('quality-selector');
-        var qualityMenu = document.getElementById('quality-menu');
-
-        qualitySelector.addEventListener('click', function () {
-            qualityMenu.style.display = qualityMenu.style.display === 'block' ? 'none' : 'block';
-        });
-
-        // Handle quality selection
-        var qualityOptions = qualityMenu.getElementsByTagName('li');
-        for (var i = 0; i < qualityOptions.length; i++) {
-            qualityOptions[i].addEventListener('click', function () {
-                var selectedQuality = this.getAttribute('data-quality');
-                var qualityUrl = "https://path-to-" + selectedQuality + ".m3u8"; // Replace with actual URLs for different qualities
-                player.src(qualityUrl);
-                qualityMenu.style.display = 'none';
+        var video = document.getElementById('live-video');
+        
+        // HLS.js is supported in Chrome, Firefox, and other browsers that don't support HLS natively
+        if (Hls.isSupported()) {
+            var hls = new Hls();
+            // Provide your HLS .m3u8 URL here
+            hls.loadSource('https://f736fce18ecea072ade164c6fbfebc0a.angelthump.com/hls/MjAyNC0xMS0yNFQwNjoyNDoxOC45NThaYXJjaGllc2hvdHM=_archieshots/index.m3u8');
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                video.play();
             });
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                console.error('Error in HLS.js:', data);
+            });
+        } 
+        // Safari and other browsers that support HLS natively
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = 'https://f736fce18ecea072ade164c6fbfebc0a.angelthump.com/hls/MjAyNC0xMS0yNFQwNjoyNDoxOC45NThaYXJjaGllc2hvdHM=_archieshots/index.m3u8'; // Direct URL for Safari support
+            video.addEventListener('loadedmetadata', function () {
+                video.play();
+            });
+        } else {
+            console.error("This browser does not support HLS playback.");
         }
 
-        // Fullscreen button functionality
-        var fullscreenButton = document.querySelector('.vjs-fullscreen-control');
-        fullscreenButton.addEventListener('click', function () {
-            if (player.isFullscreen()) {
-                player.exitFullscreen();
-            } else {
-                player.requestFullscreen();
-            }
-        });
-
-        // Initialize custom controls
-        player.ready(function () {
-            var controls = player.controlBar;
-            controls.addChild('fullscreenToggle', {}, 0);
+        // Debugging: Check if the video source is loading
+        video.addEventListener('error', function(e) {
+            console.error('Video failed to load:', e);
         });
     </script>
 
